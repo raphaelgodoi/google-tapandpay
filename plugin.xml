@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-android-googlepay-issuer" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>GooglePayIssuer</name>
+
+    <description>Google Pay Issuer implementation</description>
+    <license>Apache 2.0</license>
+    <keywords>android, google pay, pay</keywords>
+
+    <engines>
+      <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <js-module name="GooglePayIssuer" src="www/GooglePayIssuer.js">
+        <clobbers target="GooglePayIssuer" />
+    </js-module>
+
+    <platform name="android">      
+        <framework src="com.google.android.gms:play-services-tapandpay:16.0.2" />
+        <framework src="com.google.android.gms:play-services-oss-licenses:17.0.0" />
+    
+        <config-file target="config.xml" parent="/*">
+            <feature name="GooglePayIssuer">
+                <param name="android-package" value="com.raphaelgodoi.GooglePayIssuer" />
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/GooglePayIssuer.java" target-dir="src/com/raphaelgodoi/googlepayissuer" />
+    </platform>
+</plugin>

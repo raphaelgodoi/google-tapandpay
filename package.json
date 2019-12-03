@@ -1,0 +1,24 @@
+{
+    "name": "cordova-android-googlepay-issuer",
+    "version": "1.0.0",
+    "description": "Android Google Pay Issuer Plugin",
+    "cordova": {
+        "id": "cordova-android-googlepay-issuer",
+        "platforms": [
+            "android"
+        ]
+    },
+    "keywords": [
+        "android",
+        "ecosystem:cordova",
+        "cordova-android"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ],
+    "author": "Raphael Godoi Rocca Tosta",
+    "license": "Apache 2.0"
+}
