@@ -15,7 +15,7 @@
     </js-module>
 
     <platform name="android">      
-        <framework src="com.google.android.gms:play-services-tapandpay:16.0.2" />
+        <framework src="com.google.android.gms:play-services-tapandpay:17.0.1" />
         <framework src="com.google.android.gms:play-services-oss-licenses:17.0.0" />
     
         <config-file target="config.xml" parent="/*">
