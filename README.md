@@ -31,7 +31,7 @@ Update main build.gradle file with Google TapAndPay SKD path, e.g.:
 
     var googlePay = new GooglePayIssuer();
 
-    googlePay.getWalletID((walletID)=>{
+    googlePay.getActiveWalletID((walletID)=>{
         console.log(walletID);
     },(error)=>{
         console.log(error);
@@ -39,6 +39,21 @@ Update main build.gradle file with Google TapAndPay SKD path, e.g.:
     
 ```
 
+# Functions
+
+### GetActiveWalletID
+Returns the Wallet ID of the active wallet. If there is no active wallet, a error is throw.
+
+    getActiveWalletID(onSuccess,onError);
+### GetStableHardwareId
+Returns the stable hardware ID of the device. Each physical Android device has a stable hardware ID which is consistent between wallets for a given device. This ID will change as a result of a factory reset.
+
+    getStableHardwareId(onSuccess,onError);
+
+### PushProvision
+Starts the push tokenization flow in which the issuer provides most or all card details needed for Google Pay to get a valid token. Tokens added using this method are added to the active wallet.
+
+    googlePay.pushProvision(opc,cardFirstNumber,clientName,lastDigits,address,onSuccess,onError);
 
 # Credits
-Thanks to [**Raphael Godoi**](https://github.com/raphagodoi)
+Thanks to [**Raphael Godoi**](https://github.com/raphagodoi) [**Guilherme Rodrigues**](https://github.com/Guiles92)

@@ -16,7 +16,7 @@ GooglePayIssuer.prototype.show = function (msg, onSuccess, onError) {
     exec(successCallback, errorCallback, 'GooglePayIssuer', 'show', [msg]);
 };
 
-GooglePayIssuer.prototype.getWalletID = function (onSuccess,onError) {
+GooglePayIssuer.prototype.getActiveWalletID = function (onSuccess,onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -25,7 +25,31 @@ GooglePayIssuer.prototype.getWalletID = function (onSuccess,onError) {
         onSuccess(obj);
     };
 
-    exec(successCallback, errorCallback, 'GooglePayIssuer', 'getWalletID');
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'getActiveWalletID');
+};
+
+GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess,onError) {
+    var errorCallback = function (obj) {
+        onError(obj);
+    };
+
+    var successCallback = function (obj) {
+        onSuccess(obj);
+    };
+
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'getStableHardwareId');
+};
+
+GooglePayIssuer.prototype.pushProvision = function (opc,cardFirstNumber,clientName,lastDigits,address,onSuccess,onError) {
+    var errorCallback = function (obj) {
+        onError(obj);
+    };
+
+    var successCallback = function (obj) {
+        onSuccess(obj);
+    };
+
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc,cardFirstNumber,clientName,lastDigits,address]);
 };
 
 if (typeof module != 'undefined' && module.exports) {
