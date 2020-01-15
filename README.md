@@ -41,10 +41,16 @@ Update main build.gradle file with Google TapAndPay SKD path, e.g.:
 
 # Functions
 
+### GetEnvironment
+Return the current environment Google Pay is configured to use.
+
+    getEnvironment(onSuccess,onError);
+
 ### GetActiveWalletID
 Returns the Wallet ID of the active wallet. If there is no active wallet, a error is throw.
 
     getActiveWalletID(onSuccess,onError);
+
 ### GetStableHardwareId
 Returns the stable hardware ID of the device. Each physical Android device has a stable hardware ID which is consistent between wallets for a given device. This ID will change as a result of a factory reset.
 

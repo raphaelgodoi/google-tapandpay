@@ -40,6 +40,18 @@ GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess,onError) {
     exec(successCallback, errorCallback, 'GooglePayIssuer', 'getStableHardwareId');
 };
 
+GooglePayIssuer.prototype.getEnvironment = function (onSuccess,onError) {
+    var errorCallback = function (obj) {
+        onError(obj);
+    };
+
+    var successCallback = function (obj) {
+        onSuccess(obj);
+    };
+
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'getEnvironment');
+};
+
 GooglePayIssuer.prototype.pushProvision = function (opc,cardFirstNumber,clientName,lastDigits,address,onSuccess,onError) {
     var errorCallback = function (obj) {
         onError(obj);
@@ -49,7 +61,14 @@ GooglePayIssuer.prototype.pushProvision = function (opc,cardFirstNumber,clientNa
         onSuccess(obj);
     };
 
-    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc,cardFirstNumber,clientName,lastDigits,address]);
+    var options = {};
+    options.opc = opc;
+    options.cardFirstNumber = cardFirstNumber;
+    options.clientName = clientName;
+    options.lastDigits = lastDigits;
+    options.address = address;
+
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [options]);
 };
 
 if (typeof module != 'undefined' && module.exports) {
