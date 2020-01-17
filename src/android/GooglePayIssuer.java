@@ -5,6 +5,8 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
+import java.nio.charset.Charset;
+
 
 import android.widget.Toast;
 import android.util.Log;
@@ -47,7 +49,6 @@ public class GooglePayIssuer extends CordovaPlugin {
         super.initialize(cordova, webView);
         this.cordova = cordova;
         tapAndPayClient = TapAndPayClient.getClient(this.cordova.getActivity());
-
         Log.i(TAG, "INITIALIZED");
     }
 
@@ -75,28 +76,21 @@ public class GooglePayIssuer extends CordovaPlugin {
                 @Override
                 public void run() {
                     try {
-                        String cardFirstNumber = args.getString(1);
-                        int cardNetwork = 0;
-                        int tokenServiceProvider = 0;
-
-                        String opc = args.getString(0);
-
-                        if (cardFirstNumber == "4") {
-                            cardNetwork = TapAndPay.CARD_NETWORK_VISA;
-                            tokenServiceProvider = TapAndPay.TOKEN_PROVIDER_VISA;
-                        } else if (cardFirstNumber == "5") {
-                            cardNetwork = TapAndPay.CARD_NETWORK_MASTERCARD;
-                            tokenServiceProvider = TapAndPay.TOKEN_PROVIDER_MASTERCARD;
-                        }
-                        
+                        String tsp = args.getString(1);
                         String clientName = args.getString(2);
                         String lastDigits = args.getString(3);
                         JSONObject address = args.getJSONObject(4);
 
-                        if (opc.isEmpty() || cardNetwork == 0 || tokenServiceProvider == 0 || clientName.isEmpty() || lastDigits.isEmpty())
+                        int cardNetwork = 0;
+                        int tokenServiceProvider = 0;
+
+                        String opc = args.getString(0);
+                        
+                        if (opc.isEmpty() || tsp.isEmpty() || clientName.isEmpty() || lastDigits.isEmpty())
                             callbackContext.error("The data provided was not fully completed");
 
-                        pushProvision(opc, cardNetwork, tokenServiceProvider, clientName, lastDigits, address, callbackContext);
+                            pushProvision(opc, tsp, clientName, lastDigits, address, callbackContext);
+                        
                     } catch (Exception e) {
                         callbackContext.error(e.getMessage());
                     }
@@ -225,9 +219,13 @@ public class GooglePayIssuer extends CordovaPlugin {
                         });
     }
 
-    private void pushProvision(String opc, int cardNetwork, int tokenServiceProvider, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
-
+    private void pushProvision(String opc, String tsp, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
+        
         try {
+
+            int cardNetwork = (tsp.equals("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
+            int tokenServiceProvider = (tsp.equals("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
+ 
             UserAddress userAddress =
                     UserAddress.newBuilder()
                             .setName(address.getString("name"))
@@ -241,7 +239,7 @@ public class GooglePayIssuer extends CordovaPlugin {
 
             PushTokenizeRequest pushTokenizeRequest =
                     new PushTokenizeRequest.Builder()
-                            .setOpaquePaymentCard(opc.getBytes())
+                            .setOpaquePaymentCard(opc.getBytes(Charset.forName("UTF-8")))
                             .setNetwork(cardNetwork)
                             .setTokenServiceProvider(tokenServiceProvider)
                             .setDisplayName(clientName)

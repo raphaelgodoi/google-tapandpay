@@ -40,7 +40,7 @@ GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess,onError) {
     exec(successCallback, errorCallback, 'GooglePayIssuer', 'getStableHardwareId');
 };
 
-GooglePayIssuer.prototype.pushProvision = function (opc,cardFirstNumber,clientName,lastDigits,address,onSuccess,onError) {
+GooglePayIssuer.prototype.pushProvision = function (opc,tsp,clientName,lastDigits,address,onSuccess,onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -49,7 +49,7 @@ GooglePayIssuer.prototype.pushProvision = function (opc,cardFirstNumber,clientNa
         onSuccess(obj);
     };
 
-    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc,cardFirstNumber,clientName,lastDigits,address]);
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc,tsp,clientName,lastDigits,address]);
 };
 
 if (typeof module != 'undefined' && module.exports) {
