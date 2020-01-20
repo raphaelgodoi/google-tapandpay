@@ -54,7 +54,6 @@ public class GooglePayIssuer extends CordovaPlugin {
         super.initialize(cordova, webView);
         this.cordova = cordova;
         tapAndPayClient = TapAndPayClient.getClient(this.cordova.getActivity());
-
         Log.i(TAG, "INITIALIZED");
     }
 
@@ -312,8 +311,8 @@ public class GooglePayIssuer extends CordovaPlugin {
                         });
     }
 
-    private void pushProvision(String opc, int cardNetwork, int tokenServiceProvider, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
-
+    private void pushProvision(String opc, String tsp, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
+        
         try {
             Log.i(TAG, "pushProvision");
 
@@ -321,7 +320,6 @@ public class GooglePayIssuer extends CordovaPlugin {
 //                callbackContext.error("The data provided was not fully completed");
 //                return;
 //            }
-
             UserAddress userAddress =
                     UserAddress.newBuilder()
                             .setName(address.getString("name"))
