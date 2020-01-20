@@ -16,15 +16,19 @@ import org.apache.cordova.CordovaWebView;
 import com.google.android.gms.tapandpay.TapAndPay;
 
 import static com.google.android.gms.tapandpay.TapAndPayStatusCodes.TAP_AND_PAY_NO_ACTIVE_WALLET;
+import static com.google.android.gms.tapandpay.TapAndPayStatusCodes.TAP_AND_PAY_TOKEN_NOT_FOUND;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tapandpay.TapAndPayClient;
 import com.google.android.gms.tapandpay.issuer.PushTokenizeRequest;
+import com.google.android.gms.tapandpay.issuer.TokenStatus;
 import com.google.android.gms.tapandpay.issuer.UserAddress;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+
+import java.nio.charset.Charset;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -61,7 +65,27 @@ public class GooglePayIssuer extends CordovaPlugin {
 
         this.callbackContext  = callbackContext;
 
-        if ("getActiveWalletID".equals(action)) {
+        if ("getTokenStatus".equals(action)) {
+            this.cordova.getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject options = args.getJSONObject(0);
+                        String tsp = options.getString("tsp");
+                        String token = options.getString("tokenReferenceId");
+
+                        int tokenServiceProvider = (tsp.equalsIgnoreCase("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
+
+                        getTokenStatus(tokenServiceProvider, token, callbackContext);
+                    } catch (Exception e) {
+                        Log.i(TAG, "ERRO TOKEN STATUS --- " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
+
+            return true;
+        } else if ("getActiveWalletID".equals(action)) {
             this.cordova.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -96,24 +120,17 @@ public class GooglePayIssuer extends CordovaPlugin {
                 public void run() {
                     try {
                         JSONObject options = args.getJSONObject(0);
-                        String cardFirstNumber = options.getString("cardFirstNumber");
-                        int cardNetwork = 0;
-                        int tokenServiceProvider = 0;
-
+                        String tsp = options.getString("tsp");
                         String opc = options.getString("opc");
 
-                        if (cardFirstNumber == "4") {
-                            cardNetwork = TapAndPay.CARD_NETWORK_VISA;
-                            tokenServiceProvider = TapAndPay.TOKEN_PROVIDER_VISA;
-                        } else if (cardFirstNumber == "5") {
-                            cardNetwork = TapAndPay.CARD_NETWORK_MASTERCARD;
-                            tokenServiceProvider = TapAndPay.TOKEN_PROVIDER_MASTERCARD;
-                        }
+                        int cardNetwork = (tsp.equalsIgnoreCase("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
+                        int tokenServiceProvider = (tsp.equalsIgnoreCase("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
+
                         String clientName = options.getString("clientName");
                         String lastDigits = options.getString("lastDigits");
                         JSONObject address = options.getJSONObject("address");
 
-                        Intent intent = new Intent("com.raphaelgodoi.GooglePayIssuerActivity");
+//                        Intent intent = new Intent("com.raphaelgodoi.GooglePayIssuerActivity");
                         plugin.cordova.setActivityResultCallback(plugin);
 //                        plugin.cordova.startActivityForResult(plugin, intent, REQUEST_CODE_PUSH_TOKENIZE);
                         pushProvision(opc, cardNetwork, tokenServiceProvider, clientName, lastDigits, address, callbackContext);
@@ -131,8 +148,48 @@ public class GooglePayIssuer extends CordovaPlugin {
         }
     }
 
-    private void getActiveWalletID(CallbackContext callbackContext) {
+    private void getTokenStatus(int tsp, String tokenReferenceId, CallbackContext callbackContext){
+        Log.i(TAG, "Google connected -- getTokenStatus");
+        tapAndPayClient
+                .getTokenStatus(tsp, tokenReferenceId)
+                .addOnCompleteListener(
+                        new OnCompleteListener<TokenStatus>() {
+                            @Override
+                            public void onComplete(@NonNull Task<TokenStatus> task) {
+                                Log.i(TAG, "onComplete (getTokenStatus) - " + task.isSuccessful());
+                                if (task.isSuccessful()) {
+                                    @TapAndPay.TokenState int tokenStateInt = task.getResult().getTokenState();
+                                    boolean isSelected = task.getResult().isSelected();
+                                    // Next: update payment card UI to reflect token state and selection
+                                    Log.i(TAG, "SUCCESS-getTokenStatus");
+                                    callbackContext.success(tokenStateInt);
+                                } else {
+                                    ApiException apiException = (ApiException) task.getException();
+                                    if (apiException.getStatusCode() == TAP_AND_PAY_TOKEN_NOT_FOUND) {
+                                        // Could not get token status
+                                        callbackContext.error("error");
+                                    }
+                                }
+                            }
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i(TAG, "onFailure (getTokenStatus) - " + e.getMessage());
+                        callbackContext.error("error");
+                    }
+                })
+                .addOnCanceledListener(
+                        new OnCanceledListener() {
+                            @Override
+                            public void onCanceled() {
+                                Log.i(TAG, "onCanceled (getTokenStatus) - ");
+                                callbackContext.error("error");
+                            }
+                        });
+    }
 
+    private void getActiveWalletID(CallbackContext callbackContext) {
         Log.i(TAG, "Google connected -- getActiveWalletID");
         tapAndPayClient
                 .getActiveWalletId()
@@ -180,10 +237,12 @@ public class GooglePayIssuer extends CordovaPlugin {
     }
 
     private void createWallet() {
+        Log.i(TAG, "Google connected -- createWallet");
         tapAndPayClient.createWallet(this.cordova.getActivity(), REQUEST_CREATE_WALLET);
     }
 
     private void getStableHardwareId(CallbackContext callbackContext) {
+        Log.i(TAG, "Google connected -- getStableHardwareId");
         tapAndPayClient
                 .getStableHardwareId()
                 .addOnCompleteListener(
@@ -219,6 +278,7 @@ public class GooglePayIssuer extends CordovaPlugin {
     }
 
     private void getEnvironment(CallbackContext callbackContext) {
+        Log.i(TAG, "Google connected -- getEnvironment");
         tapAndPayClient
                 .getEnvironment()
                 .addOnCompleteListener(
@@ -275,7 +335,7 @@ public class GooglePayIssuer extends CordovaPlugin {
             Log.i(TAG, "Address" + address.toString());
             PushTokenizeRequest pushTokenizeRequest =
                     new PushTokenizeRequest.Builder()
-                            .setOpaquePaymentCard(opc.getBytes())
+                            .setOpaquePaymentCard(opc.getBytes(Charset.forName("UTF-8")))
                             .setNetwork(cardNetwork)
                             .setTokenServiceProvider(tokenServiceProvider)
                             .setDisplayName(clientName)
