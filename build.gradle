@@ -3,12 +3,11 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
-        maven { url "/Users/raphael/Downloads/Google/" }
+        maven { url "/Users/vicax/Desktop/Google-Pay-Push-Provisioning-Sample-App-v1_1/tapandpay_sdk.m2repo_2019-11-25_v17.0.1" }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.+'
-        classpath 'com.google.gms:google-services:12.4.+'
     }
 }
 
