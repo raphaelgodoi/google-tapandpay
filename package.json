@@ -1,24 +1,36 @@
 {
-    "name": "cordova-android-googlepay-issuer",
-    "version": "1.0.0",
-    "description": "Android Google Pay Issuer Plugin",
-    "cordova": {
-        "id": "cordova-android-googlepay-issuer",
-        "platforms": [
-            "android"
-        ]
-    },
-    "keywords": [
-        "android",
-        "ecosystem:cordova",
-        "cordova-android"
-    ],
-    "engines": [
-        {
-            "name": "cordova",
-            "version": ">=3.0.0"
-        }
-    ],
-    "author": "Raphael Godoi Rocca Tosta",
-    "license": "Apache 2.0"
+  "name": "cordova-android-googlepay-issuer",
+  "version": "1.0.0",
+  "description": "Android Google Pay Issuer Plugin",
+  "cordova": {
+    "id": "cordova-android-googlepay-issuer",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "android",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Raphael Godoi Rocca Tosta",
+  "license": "MIT",
+  "main": "www/GooglePayIssuer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raphagodoi/google-tapandpay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/raphagodoi/google-tapandpay/issues"
+  },
+  "homepage": "https://github.com/raphagodoi/google-tapandpay#readme"
 }
