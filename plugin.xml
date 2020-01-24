@@ -23,7 +23,6 @@
                 <param name="android-package" value="com.raphaelgodoi.GooglePayIssuer" />
             </feature>
         </config-file>
-
         <source-file src="src/android/GooglePayIssuer.java" target-dir="src/com/raphaelgodoi/googlepayissuer" />
     </platform>
 </plugin>
