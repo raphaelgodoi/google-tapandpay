@@ -98,7 +98,7 @@ GooglePayIssuer.prototype.getEnvironment = function (onSuccess,onError) {
     var successCallback = function (obj) {
         onSuccess(obj);
     };
-
+  
     exec(successCallback, errorCallback, 'GooglePayIssuer', 'getEnvironment');
 };
 

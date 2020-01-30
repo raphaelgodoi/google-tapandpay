@@ -54,7 +54,6 @@ public class GooglePayIssuer extends CordovaPlugin {
         super.initialize(cordova, webView);
         this.cordova = cordova;
         tapAndPayClient = TapAndPayClient.getClient(this.cordova.getActivity());
-
         Log.i(TAG, "INITIALIZED");
     }
 
@@ -125,6 +124,7 @@ public class GooglePayIssuer extends CordovaPlugin {
                         JSONObject address = args.getJSONObject(4);
 
                         String opc = args.getString(0);
+                        
                         plugin.cordova.setActivityResultCallback(plugin);
 
                         pushProvision(opc, tsp, clientName, lastDigits, address, callbackContext);
@@ -311,7 +311,7 @@ public class GooglePayIssuer extends CordovaPlugin {
         try {
             Log.i(TAG, "pushProvision");
 
-//           int cardNetwork = (tsp.equals("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
+            int cardNetwork = (tsp.equals("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
             int tokenServiceProvider = (tsp.equals("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
  
             UserAddress userAddress =
