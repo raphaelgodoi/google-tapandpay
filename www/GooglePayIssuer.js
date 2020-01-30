@@ -124,14 +124,7 @@ GooglePayIssuer.prototype.pushProvision = function (opc,tsp,clientName,lastDigit
         onSuccess(obj);
     };
 
-    var options = {};
-    options.opc = opc;
-    options.tsp = tsp;
-    options.clientName = clientName;
-    options.lastDigits = lastDigits;
-    options.address = address;
-
-    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [options]);
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc,tsp,clientName,lastDigits,address]);
 };
 
 if (typeof module != 'undefined' && module.exports) {

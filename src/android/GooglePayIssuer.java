@@ -119,21 +119,15 @@ public class GooglePayIssuer extends CordovaPlugin {
                 @Override
                 public void run() {
                     try {
-                        JSONObject options = args.getJSONObject(0);
-                        String tsp = options.getString("tsp");
-                        String opc = options.getString("opc");
+                        String tsp = args.getString(1);
+                        String clientName = args.getString(2);
+                        String lastDigits = args.getString(3);
+                        JSONObject address = args.getJSONObject(4);
 
-                        int cardNetwork = (tsp.equalsIgnoreCase("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
-                        int tokenServiceProvider = (tsp.equalsIgnoreCase("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
-
-                        String clientName = options.getString("clientName");
-                        String lastDigits = options.getString("lastDigits");
-                        JSONObject address = options.getJSONObject("address");
-
-//                        Intent intent = new Intent("com.raphaelgodoi.GooglePayIssuerActivity");
+                        String opc = args.getString(0);
                         plugin.cordova.setActivityResultCallback(plugin);
-//                        plugin.cordova.startActivityForResult(plugin, intent, REQUEST_CODE_PUSH_TOKENIZE);
-                        pushProvision(opc, cardNetwork, tokenServiceProvider, clientName, lastDigits, address, callbackContext);
+
+                        pushProvision(opc, tsp, clientName, lastDigits, address, callbackContext);
                     } catch (Exception e) {
                         Log.i(TAG, "ERRO PROVISIONAMENTO --- " + e.getMessage());
                         callbackContext.error(e.getMessage());
@@ -312,16 +306,14 @@ public class GooglePayIssuer extends CordovaPlugin {
                         });
     }
 
-    private void pushProvision(String opc, int cardNetwork, int tokenServiceProvider, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
-
+    private void pushProvision(String opc, String tsp, String clientName, String lastDigits, JSONObject address, CallbackContext callbackContext) {
+      
         try {
             Log.i(TAG, "pushProvision");
 
-//            if (opc.isEmpty() || cardNetwork == 0 || tokenServiceProvider == 0 || clientName.isEmpty() || lastDigits.isEmpty()){
-//                callbackContext.error("The data provided was not fully completed");
-//                return;
-//            }
-
+//           int cardNetwork = (tsp.equals("VISA")) ? TapAndPay.CARD_NETWORK_VISA : TapAndPay.CARD_NETWORK_MASTERCARD;
+            int tokenServiceProvider = (tsp.equals("VISA")) ? TapAndPay.TOKEN_PROVIDER_VISA : TapAndPay.TOKEN_PROVIDER_MASTERCARD;
+ 
             UserAddress userAddress =
                     UserAddress.newBuilder()
                             .setName(address.getString("name"))
@@ -332,7 +324,7 @@ public class GooglePayIssuer extends CordovaPlugin {
                             .setPostalCode(address.getString("postalCode"))
                             .setPhoneNumber(address.getString("phoneNumber"))
                             .build();
-            Log.i(TAG, "Address" + address.toString());
+
             PushTokenizeRequest pushTokenizeRequest =
                     new PushTokenizeRequest.Builder()
                             .setOpaquePaymentCard(opc.getBytes(Charset.forName("UTF-8")))
@@ -342,9 +334,8 @@ public class GooglePayIssuer extends CordovaPlugin {
                             .setLastDigits(lastDigits)
                             .setUserAddress(userAddress)
                             .build();
-            Log.i(TAG, "pushTokenizeRequest");
+
             tapAndPayClient.pushTokenize(this.cordova.getActivity(), pushTokenizeRequest, REQUEST_CODE_PUSH_TOKENIZE);
-            Log.i(TAG, "success");
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
