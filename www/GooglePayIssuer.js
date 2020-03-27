@@ -26,7 +26,7 @@ GooglePayIssuer.prototype.show = function (msg, onSuccess, onError) {
  *
  * @return [ Int ] tokenStateInt The int value that represent token status.
  */
-GooglePayIssuer.prototype.getTokenStatus = function (tsp,tokenReferenceId,onSuccess,onError) {
+GooglePayIssuer.prototype.getTokenStatus = function (tsp, tokenReferenceId, onSuccess, onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -50,7 +50,7 @@ GooglePayIssuer.prototype.getTokenStatus = function (tsp,tokenReferenceId,onSucc
  *
  * @return [ String ] walletID The active walletID string.
  */
-GooglePayIssuer.prototype.getActiveWalletID = function (onSuccess,onError) {
+GooglePayIssuer.prototype.getActiveWalletID = function (onSuccess, onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -70,7 +70,7 @@ GooglePayIssuer.prototype.getActiveWalletID = function (onSuccess,onError) {
  *
  * @return [ String ] hardwareID The active hardwareID string.
  */
-GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess,onError) {
+GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess, onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -90,7 +90,7 @@ GooglePayIssuer.prototype.getStableHardwareId = function (onSuccess,onError) {
  *
  * @return [ String ] environment The active environment string.
  */
-GooglePayIssuer.prototype.getEnvironment = function (onSuccess,onError) {
+GooglePayIssuer.prototype.getEnvironment = function (onSuccess, onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -98,7 +98,7 @@ GooglePayIssuer.prototype.getEnvironment = function (onSuccess,onError) {
     var successCallback = function (obj) {
         onSuccess(obj);
     };
-  
+
     exec(successCallback, errorCallback, 'GooglePayIssuer', 'getEnvironment');
 };
 
@@ -115,7 +115,7 @@ GooglePayIssuer.prototype.getEnvironment = function (onSuccess,onError) {
  *
  * @return [ String ] tokenReferenceId The tokenID that represents the given card provisioning.
  */
-GooglePayIssuer.prototype.pushProvision = function (opc,tsp,clientName,lastDigits,address,onSuccess,onError) {
+GooglePayIssuer.prototype.pushProvision = function (opc, tsp, clientName, lastDigits, address, onSuccess, onError) {
     var errorCallback = function (obj) {
         onError(obj);
     };
@@ -124,14 +124,9 @@ GooglePayIssuer.prototype.pushProvision = function (opc,tsp,clientName,lastDigit
         onSuccess(obj);
     };
 
-    var options = {};
-    options.opc = opc;
-    options.tsp = tsp;
-    options.clientName = clientName;
-    options.lastDigits = lastDigits;
-    options.address = address;
+    console.log("pushProvision JS PLUGIN");
 
-    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [options]);
+    exec(successCallback, errorCallback, 'GooglePayIssuer', 'pushProvision', [opc, tsp, clientName, lastDigits, address]);
 };
 
 if (typeof module != 'undefined' && module.exports) {

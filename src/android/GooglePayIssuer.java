@@ -118,15 +118,16 @@ public class GooglePayIssuer extends CordovaPlugin {
                 @Override
                 public void run() {
                     try {
+Log.i(TAG, "PUSHPROVISION --- 1" );
                         String tsp = args.getString(1);
                         String clientName = args.getString(2);
                         String lastDigits = args.getString(3);
                         JSONObject address = args.getJSONObject(4);
 
                         String opc = args.getString(0);
-                        
+Log.i(TAG, "PUSHPROVISION --- 2" );                        
                         plugin.cordova.setActivityResultCallback(plugin);
-
+Log.i(TAG, "PUSHPROVISION --- 3" );
                         pushProvision(opc, tsp, clientName, lastDigits, address, callbackContext);
                     } catch (Exception e) {
                         Log.i(TAG, "ERRO PROVISIONAMENTO --- " + e.getMessage());
